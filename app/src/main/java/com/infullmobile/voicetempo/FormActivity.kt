@@ -2,6 +2,7 @@ package com.infullmobile.voicetempo
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.AlarmClock
@@ -14,9 +15,10 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import com.github.glomadrian.grav.GravView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.*
+import java.util.Calendar
 import java.util.regex.Pattern
 
 
@@ -30,6 +32,7 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
     private lateinit var authorEdit: EditText
     private lateinit var commentEdit: EditText
     private lateinit var secondsSpentEdit: EditText
+    private lateinit var grav: GravView
 
     private lateinit var datePickerDialog: DatePickerDialog
     private var mYear: Int = 0
@@ -38,6 +41,7 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
     private var chosenYear: Int = 0
     private var chosenMonth: Int = 0
     private var chosenDay: Int = 0
+    var dialog: Dialog? = null
 
     val re = Pattern.compile("(\\w+)")
 
@@ -52,6 +56,7 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
         authorEdit = findViewById(R.id.authorEdit) as EditText
         commentEdit = findViewById(R.id.commentEdit) as EditText
         secondsSpentEdit = findViewById(R.id.secondsSpentEdit) as EditText
+//        grav = findViewById(R.id.grav) as GravView
         findViewById(R.id.background).setOnClickListener {startRecognition()}
 
         val timeInt = intent.getIntExtra(AlarmClock.EXTRA_LENGTH, 0)
@@ -90,6 +95,9 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
         } else {
             Log.e("AAAA", " no recognition available")
         }
+        dialog = Dialog(this)
+        dialog?.setContentView(R.layout.dialog)
+        dialog?.show()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
@@ -174,10 +182,10 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
 
     override fun onError(p0: Int) {
         Log.e("AAAAA", p0.toString())
-//        startRecognition()
     }
 
     override fun onResults(p0: Bundle?) {
+        dialog?.dismiss()
         var result = p0?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull()
         val reMatch = re.matcher(result)
         reMatch.find()
@@ -191,9 +199,10 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
         newReMach.find()
         val newnewResult = newReMach.replaceFirst("")
         commentEdit.setText(newnewResult.trim())
-        /*val text = findViewById(R.id.main) as TextView
-        results?.forEach {
-            text.append(it)
-        }*/
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        grav.start()
     }
 }

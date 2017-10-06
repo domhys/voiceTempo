@@ -18,7 +18,7 @@ import android.widget.EditText
 import com.github.glomadrian.grav.GravView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.Calendar
+import java.util.*
 import java.util.regex.Pattern
 
 
@@ -31,6 +31,8 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
     private lateinit var taskCodeEdit: EditText
     private lateinit var authorEdit: EditText
     private lateinit var commentEdit: EditText
+    private lateinit var hoursSpentEdit: EditText
+    private lateinit var minutesSpentEdit: EditText
     private lateinit var secondsSpentEdit: EditText
     private lateinit var grav: GravView
 
@@ -55,12 +57,14 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
         taskCodeEdit = findViewById(R.id.taskCodeEdit) as EditText
         authorEdit = findViewById(R.id.authorEdit) as EditText
         commentEdit = findViewById(R.id.commentEdit) as EditText
+        hoursSpentEdit = findViewById(R.id.hoursSpentEdit) as EditText
+        minutesSpentEdit = findViewById(R.id.minutesSpentEdit) as EditText
         secondsSpentEdit = findViewById(R.id.secondsSpentEdit) as EditText
 //        grav = findViewById(R.id.grav) as GravView
         findViewById(R.id.background).setOnClickListener {startRecognition()}
 
         val timeInt = intent.getIntExtra(AlarmClock.EXTRA_LENGTH, 0)
-        timeInt?.let { secondsSpentEdit.setText(it.toString()) }
+        timeInt?.let { setTimeSpent(it) }
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             startRecognition()
@@ -72,6 +76,10 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
         mYear = c.get(Calendar.YEAR)
         mMonth = c.get(Calendar.MONTH)
         mDay = c.get(Calendar.DAY_OF_MONTH)
+        chosenYear = mYear
+        chosenMonth = mMonth + 1
+        chosenDay = mDay
+        datePickerButton.text = chosenDay.toString() + "-" + (chosenMonth) + "-" + chosenYear
 
         datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             chosenYear = year
@@ -81,6 +89,18 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
         }, mYear, mMonth, mDay)
         datePickerButton.setOnClickListener { datePickerDialog.show() }
         logButton.setOnClickListener { sendData() }
+    }
+
+    private fun setTimeSpent(timeSpent: Int) {
+        hoursSpentEdit.setText((timeSpent / 3600).toString())
+        minutesSpentEdit.setText(((timeSpent % 3600) / 60).toString())
+        secondsSpentEdit.setText((timeSpent % 60).toString())
+    }
+
+    private fun getTimeSpent(): Long {
+        return hoursSpentEdit.text.toString().toLong() * 3600 +
+                minutesSpentEdit.text.toString().toLong() * 60 +
+                secondsSpentEdit.text.toString().toLong()
     }
 
     private fun startRecognition() {
@@ -127,7 +147,7 @@ open class FormActivity : AppCompatActivity(), RecognitionListener {
             NameRequest(authorEdit.text.toString()),
             commentEdit.text.toString(),
             DateFormatter.convertToSendableDate(chosenYear, chosenMonth, chosenDay),
-            secondsSpentEdit.text.toString().toLong()
+            getTimeSpent()
     )
 
     private fun showSuccessDialog() {

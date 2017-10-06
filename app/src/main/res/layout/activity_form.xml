@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clickable="false"
     android:focusable="true"
     android:focusableInTouchMode="true"
@@ -42,21 +42,21 @@
 
         </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="Descr: "/>
-
-        <EditText
-            android:id="@+id/commentEdit"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="comment"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Descr: "/>
+
+            <EditText
+                android:id="@+id/commentEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="comment"/>
 
         </LinearLayout>
 
@@ -83,14 +83,57 @@
             android:hint="author"
             android:text="dominik.hys"/>
 
-
-        <EditText
-            android:id="@+id/secondsSpentEdit"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="minutes spent"
-            android:inputType="number"
-            android:text="15"/>
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/hoursSpentEdit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="seconds spent"
+                android:inputType="number"
+                android:text="0"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="h"/>
+
+            <EditText
+                android:id="@+id/minutesSpentEdit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="seconds spent"
+                android:inputType="number"
+                android:text="0"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="min"/>
+
+            <EditText
+                android:id="@+id/secondsSpentEdit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="seconds spent"
+                android:inputType="number"
+                android:text="0"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="s"/>
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/datePickerButton"
